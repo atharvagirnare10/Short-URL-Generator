@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
             @PostMapping("/api/urls")
             public ResponseEntity<?> createShortUrl(@RequestBody Map<String, String> request) {
                 String originalUrl = request.get("originalUrl");
-                String customAlias = request.get("alias"); // Look for the custom text
+                String customAlias = request.get("alias"); 
 
                 try {
                     // Pass both to the service
