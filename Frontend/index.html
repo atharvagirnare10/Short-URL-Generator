@@ -41,14 +41,12 @@
 
         resultDiv.innerHTML = "Generating...";
 
-        // Build the request body
         const requestBody = { originalUrl: longUrl };
         if (customAlias) {
             requestBody.alias = customAlias;
         }
 
         try {
-            // Call your local Spring Boot API
             const response = await fetch('http://localhost:8080/api/urls', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -58,11 +56,9 @@
             const data = await response.json();
 
             if (response.ok) {
-                // Success! Make the link clickable
                 resultDiv.innerHTML = `<span class='success'>Success!</span><br>
                 <a href="${data.shortUrl}" target="_blank">${data.shortUrl}</a>`;
             } else {
-                // Alias taken or other error
                 resultDiv.innerHTML = `<span class='error'>Error: ${data.error || 'Something went wrong'}</span>`;
             }
         } catch (error) {
