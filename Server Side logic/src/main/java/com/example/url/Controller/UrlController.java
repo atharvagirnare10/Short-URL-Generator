@@ -33,7 +33,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
                     return ResponseEntity.ok(Map.of("shortUrl", shortUrl));
 
                 } catch (IllegalArgumentException e) {
-                    // If the alias is taken, return a 400 error message
                     return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
                 }
             }
