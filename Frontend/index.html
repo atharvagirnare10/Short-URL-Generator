@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My URL Shortener</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #7373e9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
+        input { width: 90%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
+        button { width: 100%; padding: 10px; background-color: #1e7de3; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-top: 10px;}
+        button:hover { background-color: #0056b3; }
+        #result { margin-top: 20px; font-weight: bold; word-break: break-all; }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2 style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Short Link Generator</h2>
+    
+    <input type="url" id="longUrl" placeholder="Paste your long URL" required>
+    <input type="text" id="customAlias" placeholder="Custom (optional)">
+    
+    <button onclick="shortenUrl()">Shorten URL</button>
+
+    <div id="result"></div>
+</div>
+
+<script>
+    async function shortenUrl() {
+        const longUrl = document.getElementById('longUrl').value;
+        const customAlias = document.getElementById('customAlias').value;
+        const resultDiv = document.getElementById('result');
+
+        if (!longUrl) {
+            resultDiv.innerHTML = "<span class='error'>Please enter a valid URL.</span>";
+            return;
+        }
+
+        resultDiv.innerHTML = "Generating...";
+
+        // Build the request body
+        const requestBody = { originalUrl: longUrl };
+        if (customAlias) {
+            requestBody.alias = customAlias;
+        }
+
+        try {
+            // Call your local Spring Boot API
+            const response = await fetch('http://localhost:8080/api/urls', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(requestBody)
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                // Success! Make the link clickable
+                resultDiv.innerHTML = `<span class='success'>Success!</span><br>
+                <a href="${data.shortUrl}" target="_blank">${data.shortUrl}</a>`;
+            } else {
+                // Alias taken or other error
+                resultDiv.innerHTML = `<span class='error'>Error: ${data.error || 'Something went wrong'}</span>`;
+            }
+        } catch (error) {
+            resultDiv.innerHTML = "<span class='error'>Failed to connect to the server. Is Spring Boot running?</span>";
+        }
+    }
+</script>
+
+</body>
+</html>
