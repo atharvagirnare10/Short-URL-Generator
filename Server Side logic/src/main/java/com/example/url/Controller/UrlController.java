@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 
             @Value("${app.base-url:http://localhost:8080}")
             private String baseUrl;
-
+            //common URL 
             @PostMapping("/api/urls")
             public ResponseEntity<?> createShortUrl(@RequestBody Map<String, String> request) {
                 String originalUrl = request.get("originalUrl");
